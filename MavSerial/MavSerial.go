@@ -62,9 +62,7 @@ func (ms MavSerial) Read() <-chan []byte {
 	return readChan
 }
 
-func (ms MavSerial) Write() chan<- []byte {
-	sendBuffer := make(chan []byte, 10000)
-
+func (ms MavSerial) Write(sendBuffer <-chan []byte) {
 	go func() {
 		for {
 			_, err := ms.serialPort.Write(<-sendBuffer)
@@ -74,5 +72,4 @@ func (ms MavSerial) Write() chan<- []byte {
 			}
 		}
 	}()
-	return sendBuffer
 }

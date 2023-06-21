@@ -7,18 +7,14 @@ import (
 )
 
 func main() {
-	udp, _ := udp.NewUdpTranslator(":14567")
-	ser, _ := MavSerial.NewMavSerial("COM8", 1500000)
-	readBuffer := ser.Read()
-	send := ser.Write()
-	udpBuffer := udp.ReadFromUdp()
+	udpTranslator, _ := udp.NewUdpTranslator(":14567")
+	serial, _ := MavSerial.NewMavSerial("COM8", 1500000)
 
-	go func() {
-		for {
-			send <- <-udpBuffer
-		}
-	}()
-	udp.WriteToUdp(readBuffer)
+	MessagesFromSerialPort := serial.Read()
+	udpTranslator.Write(MessagesFromSerialPort)
+
+	messagesFromUdp := udpTranslator.Read()
+	serial.Write(messagesFromUdp)
 
 	signal.WaitForTerminationSignal()
 }

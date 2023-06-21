@@ -24,7 +24,7 @@ func NewUdpTranslator(address string) (*UdpTranslator, error) {
 	return udpTranslator, nil
 }
 
-func (trans *UdpTranslator) ReadFromUdp() <-chan []byte {
+func (trans *UdpTranslator) Read() <-chan []byte {
 	readChan := make(chan []byte, 10000)
 	go func() {
 		for {
@@ -43,7 +43,7 @@ func (trans *UdpTranslator) ReadFromUdp() <-chan []byte {
 	return readChan
 }
 
-func (trans *UdpTranslator) WriteToUdp(write <-chan []byte) {
+func (trans *UdpTranslator) Write(write <-chan []byte) {
 	go func() {
 		for {
 			buf := <-write
